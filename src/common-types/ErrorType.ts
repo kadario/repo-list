@@ -1,0 +1,1 @@
+export type ErrorMessageType = Error | null | undefined | string;
