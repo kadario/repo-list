@@ -3,7 +3,7 @@
 This is test assignment application made with React, Typescript, Zustand, React router.
 Small React application that allows users to search for GitHub repositories and view some basic details about them.
 
-_Make sure You are using node version > 20 (22 preffereed)_
+_Make sure You are using node version > 20 (22 preferred)_
 
 
 
