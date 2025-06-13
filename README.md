@@ -36,5 +36,6 @@ $ npm start
 ```
 $ npm test
 ```
-After starting the project click to generated link (probably http://localhost:5173/)
-Have fun!
+After starting the project click to generated link (probably http://localhost:5173/).
+
+Have fun! :)
