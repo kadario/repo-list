@@ -1,3 +1,8 @@
+//**Libs */
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+
+//**Store */
 import { useSearchStore } from "@store/useSearchStore";
 
 interface PaginationProps {
@@ -44,6 +49,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <nav aria-label="Pagination" className="mt-15 mb-10" role="pagination">
       <ul className="flex justify-center gap-1 text-gray-900">
+        {/* Left Arrow */}
         <li>
           <button
             onClick={handlePrevChange}
@@ -55,20 +61,11 @@ const Pagination: React.FC<PaginationProps> = ({
             }`}
             aria-label="Previous page"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="size-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <FontAwesomeIcon icon={faAngleLeft} />
           </button>
         </li>
+
+        {/* Page Numbers */}
         {pages.map((page) => (
           <li key={page}>
             <button
@@ -85,6 +82,7 @@ const Pagination: React.FC<PaginationProps> = ({
           </li>
         ))}
 
+        {/* Right Arrow */}
         <li>
           <button
             onClick={handleNextChange}
@@ -96,18 +94,7 @@ const Pagination: React.FC<PaginationProps> = ({
             }`}
             aria-label="Next page"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="size-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <FontAwesomeIcon icon={faAngleRight} />
           </button>
         </li>
       </ul>

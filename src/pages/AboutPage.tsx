@@ -1,3 +1,6 @@
+//**Libs  */
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+
 //**Components */
 import Breadcrumbs from "@components/breadcrumbs/Breadcrumbs";
 
@@ -6,7 +9,7 @@ const AboutPage = () => {
     <div className="my-8 w-full">
       <Breadcrumbs
         items={[
-          { label: "Home", path: "/" },
+          { label: faHome, path: "/" },
           { label: "About", path: "/about" },
         ]}
       />

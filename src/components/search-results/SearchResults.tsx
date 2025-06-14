@@ -15,7 +15,7 @@ const SearchResults: React.FC = () => {
       {searchOnclickResults.length > 0 ? (
         <>
           {searchOnclickResults.map((item) => (
-            <SearchResultItem item={item} />
+            <SearchResultItem item={item} key={item.id} />
           ))}
         </>
       ) : (

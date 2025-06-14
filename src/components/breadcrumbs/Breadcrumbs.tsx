@@ -1,8 +1,14 @@
+//**Libs */
 import React from "react";
 import { Link } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+
+//**Types */
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 interface BreadcrumbsProps {
-  items: { label: string; path: string }[];
+  items: { label: string | IconProp; path: string }[];
 }
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
@@ -15,21 +21,17 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
               to={item.path}
               className="block transition-colors hover:text-gray-900"
             >
-              {item.label}
+              {typeof item.label === "string" ? (
+                <span>{item.label}</span>
+              ) : (
+                <FontAwesomeIcon icon={item.label} />
+              )}
             </Link>
             {index < items.length - 1 && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="size-4 mx-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <FontAwesomeIcon
+                icon={faAngleRight}
+                className="mx-2 text-gray-400"
+              />
             )}
           </li>
         ))}

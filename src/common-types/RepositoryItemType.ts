@@ -1,3 +1,9 @@
+export interface SearchResults {
+  total_count: number;
+  incomplete_results: boolean;
+  items: RepositoryItem[];
+}
+
 export interface RepositoryItem {
   id: number;
   node_id: string;
