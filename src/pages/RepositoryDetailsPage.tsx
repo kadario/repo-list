@@ -1,10 +1,15 @@
+//**Libs */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 
 //**Components  */
 import Breadcrumbs from "@components/breadcrumbs/Breadcrumbs";
-import ErrorMessage from "@/components/error-message/ErrorMessage";
+import ErrorMessage from "@components/error-message/ErrorMessage";
+import Loader from "@components/loader/Loader";
 
 //**Types */
 import type { RepositoryItem } from "@/common-types/RepositoryItemType";
@@ -17,8 +22,11 @@ const RepositoryDetailsPage = () => {
   const [repositoryDetails, setRepositoryDetails] =
     useState<RepositoryItem | null>(null);
   const [error, setError] = useState<ErrorMessageType>(null);
+  const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoader(true);
+
     axios
       .get(`${API_URL}/repos/${ownerLogin}/${repoName}`)
       .then((response) => {
@@ -26,6 +34,9 @@ const RepositoryDetailsPage = () => {
       })
       .catch((error) => {
         setError(error);
+      })
+      .finally(() => {
+        setLoader(false);
       });
   }, [ownerLogin, repoName]);
 
@@ -33,7 +44,7 @@ const RepositoryDetailsPage = () => {
     <div>
       <Breadcrumbs
         items={[
-          { label: "Home", path: "/" },
+          { label: faHome, path: "/" },
           {
             label: `${ownerLogin} / ${repoName}`,
             path: `/repository/${ownerLogin}/${repoName}`,
@@ -108,6 +119,7 @@ const RepositoryDetailsPage = () => {
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
                   >
+                    <FontAwesomeIcon icon={faGithub} />{" "}
                     {repositoryDetails.html_url}
                   </a>
                 </dd>
@@ -116,7 +128,9 @@ const RepositoryDetailsPage = () => {
           </div>
         </div>
       ) : (
-        <div className="mt-4 text-gray-500">Loading repository details...</div>
+        <div className="mt-4 text-gray-500 min-h-100 relative">
+          <Loader loading={loader} />
+        </div>
       )}
     </div>
   );

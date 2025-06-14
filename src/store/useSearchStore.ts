@@ -3,8 +3,8 @@ import { create } from 'zustand';
 import axios from "axios";
 
 //**Types */
-import type { RepositoryItem } from '@/common-types/RepositoryItemType';
-import type { SortByOptions } from '@/common-types/SortType';
+import type { RepositoryItem, SearchResults } from '@common-types/RepositoryItemType';
+import type { SortByOptions } from '@common-types/SortType';
 interface ExecuteSearchArguments {
   (searchQuery: string, 
   items_per_page?: number, 
@@ -20,6 +20,7 @@ interface SearchStore {
   error?: string;
   page: number;
   sortOption: SortByOptions;
+  cache: Map<string, SearchResults>;
   setSortOption: (sort: SortByOptions) => void;
   setQuery: (query: string) => void;
   setSearchTypingResults: (results: RepositoryItem[]) => void;
@@ -29,17 +30,36 @@ interface SearchStore {
   executeSort: () => void;
 }
 
+type initialSearchStore = Pick<SearchStore, 'query' | "searchTypingResults" | "searchOnclickResults" | "totalCount" | "loading" | "error" | "page" | "sortOption" | "cache">
+
 import { API_URL } from "@/constants/api";
 
-export const useSearchStore = create<SearchStore>((set, get) => ({
+const initialState: initialSearchStore = {
   query: '',
-  totalCount: 0,
   searchTypingResults: [],
   searchOnclickResults: [],
+  totalCount: 0,
   loading: false,
   error: '',
   page: 0,
   sortOption: 'default' as SortByOptions,
+  cache: new Map(),
+};
+
+const setData = (set: (object: Partial<SearchStore>) => void, get: () => SearchStore, data: SearchResults, typing: boolean) => {
+  if (typing) {
+    set({searchTypingResults: data.items || [], totalCount: data.total_count || 0});
+  } else {
+    set({searchOnclickResults: data.items || [], totalCount: data.total_count || 0, searchTypingResults: [], loading: false});  
+
+    if (get().sortOption !== 'default') {
+      get().executeSort();
+    }
+  }
+}
+
+export const useSearchStore = create<SearchStore>((set, get) => ({
+  ...initialState,
   setQuery: (query: string) => set({ query }),
   setPage: (page: number) => set({ page }),
   setSortOption: (sortOption: SortByOptions) => set({ sortOption }),
@@ -47,6 +67,8 @@ export const useSearchStore = create<SearchStore>((set, get) => ({
   setSearchOnclickResults: (results: RepositoryItem[]) => set({ searchOnclickResults: results }),
   executeSearch: (searchQuery, items_per_page = 5, page = 1) => {
     const typing: boolean = items_per_page === 5; 
+    const apiUrl: string = `${API_URL}/search/repositories?q=${searchQuery}&per_page=${items_per_page}&page=${page}`;
+    const cache: Map<string, SearchResults> = get().cache;
 
     set({ error: '' });
     
@@ -54,26 +76,22 @@ export const useSearchStore = create<SearchStore>((set, get) => ({
       set({ searchTypingResults: [], loading: false });
       return;
     }
-    if (!typing) set({ loading: true});
     
-    axios
-        .get(
-          `${API_URL}/search/repositories?q=${searchQuery}&per_page=${items_per_page}&page=${page}`
-        )
-        .then((response) => {
-          if (typing) {
-            set({searchTypingResults: response.data.items || [], totalCount: response.data.total_count || 0});
-          } else {
-            set({searchOnclickResults: response.data.items || [], totalCount: response.data.total_count || 0, searchTypingResults: [], loading: false});  
+    if (!typing) set({ loading: true});
 
-            if (get().sortOption !== 'default') {
-              get().executeSort();
-            }
-          }
-        })
-        .catch((error) => {
-          set({searchOnclickResults: [], loading: false, error: error.message || 'Error fetching posts', page: 0});
-        });
+    if (cache.get(apiUrl)) {
+      setData(set, get, cache.get(apiUrl) as SearchResults, typing);
+    } else {
+      axios.get(apiUrl)
+          .then((response) => {
+            setData(set, get, response.data, typing);
+            cache.set(apiUrl, response.data);
+          })
+          .catch((error) => {
+            set({searchOnclickResults: [], loading: false, error: error.message || 'Error fetching posts', page: 0});
+          });
+    }
+    
   },
 
   executeSort: () => {
