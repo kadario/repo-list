@@ -38,4 +38,8 @@ $ npm test
 ```
 After starting the project click to generated link (probably http://localhost:5173/).
 
+Also you can check live version here: https://kadario.github.io/
+
+Caching requests only implemented for main search page.
+
 Have fun! :)
