@@ -1,5 +1,4 @@
 import type { ErrorMessageType } from "@common-types/ErrorType";
-// type ErrorMessageType = Error | null | undefined | string;
 
 const ErrorMessage = ({ error }: { error: ErrorMessageType }) => {
   return error ? (
