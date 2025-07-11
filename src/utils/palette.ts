@@ -79,7 +79,7 @@ export function createTone(toneSetupCallback: ToneSetupCallbackType<ColorData>, 
  * @param paletteSetup - palette settings, if empty - palette will not be created / настройки палитры, если не передан, то палитра не будет
  * @returns palette result or basic colors data object / объект с палитрой или объект с переданными изначально цветами
  */
-export function createPalette(colorsData: InputModel, paletteSetup: PaletteSetupType = null): PaletteResultType {
+export function createPalette(colorsData: InputModel, paletteSetup: PaletteSetupType = null): PaletteResultType | InputModel {
   if (paletteSetup) {
     const baseData = paletteSetup?.base(colorsData);
     const tones = paletteSetup?.tones;

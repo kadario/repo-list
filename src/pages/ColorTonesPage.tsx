@@ -27,7 +27,9 @@ const ColorTonesPage = () => {
   const [checkedColors, setCheckedColors] = useState<string[]>([]);
   const [checkedTones, setCheckedTones] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [palette, setPalette] = useState<PaletteResultType | null>(null);
+  const [palette, setPalette] = useState<PaletteResultType | InputModel | null>(
+    null
+  );
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,7 +82,7 @@ const ColorTonesPage = () => {
       };
     }
 
-    const colors: PaletteResultType = createPalette(mappedColors, {
+    const colors: PaletteResultType | InputModel = createPalette(mappedColors, {
       base: baseColors,
       tones: {
         ...tones,
